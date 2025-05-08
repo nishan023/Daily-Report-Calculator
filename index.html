@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fastrac B Daily Report</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+      <div class="bg-white shadow-md rounded-lg p-4">
+        <!-- Header with Logo -->
+        <div class="report-header">
+          <div class="logo-section">
+            <div class="logo">FB</div>
+            <div class="logo-text">
+              <div class="logo-title">Fastrac B</div>
+              <div class="logo-subtitle">Daily Financial Report</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm text-gray-600">
+              Report #FTB-<span id="reportNumber">N/A</span>
+            </div>
+            <div class="text-sm text-gray-600" id="currentTime"></div>
+          </div>
+        </div>
+
+        <!-- Store Information -->
+        <div class="mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label
+                for="storeLocation"
+                class="block text-sm font-medium text-gray-700"
+                >Store Location</label
+              >
+              <input
+                type="text"
+                id="storeLocation"
+                class="form-control"
+                placeholder="Store Location"
+                value="Fastrac B" />
+            </div>
+            <div>
+              <label
+                for="storeAddress"
+                class="block text-sm font-medium text-gray-700"
+                >Store Address</label
+              >
+              <input
+                type="text"
+                id="storeAddress"
+                class="form-control"
+                placeholder="Store Address"
+                value="12 W 3900 South" />
+            </div>
+            <div>
+              <label
+                for="reportDate"
+                class="block text-sm font-medium text-gray-700"
+                >Report Date</label
+              >
+              <input
+                type="date"
+                id="reportDate"
+                class="form-control"
+                value="2025-05-16" />
+            </div>
+          </div>
+        </div>
+
+        <form id="dailyReportForm">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Column -->
+            <div>
+              <div class="card shadow-sm mb-4">
+                <div class="card-header bg-green-50">
+                  <h5 class="mb-0 font-bold text-green-800">Bag Cash</h5>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="bagCash" class="form-label">Bag Cash</label>
+                    <input
+                      type="number"
+                      id="bagCash"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="paidOutCash" class="form-label"
+                      >Paid Out Cash</label
+                    >
+                    <input
+                      type="number"
+                      id="paidOutCash"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="grocery" class="form-label">Grocery</label>
+                    <input
+                      type="number"
+                      id="grocery"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="gas" class="form-label">Gas</label>
+                    <input
+                      type="number"
+                      id="gas"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="gall" class="form-label">Gall</label>
+                    <input
+                      type="number"
+                      id="gall"
+                      class="form-control text-right"
+                      placeholder="0.000"
+                      step="0.001" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="rebate" class="form-label">Rebate</label>
+                    <input
+                      type="number"
+                      id="rebate"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div
+                    class="d-flex justify-content-between font-bold p-2 highlight-total">
+                    <span>Total:</span>
+                    <span id="bagCashTotal">0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-header bg-green-50">
+                  <h5 class="mb-0 font-bold text-green-800">
+                    Receipts Summary
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="cashReceipts" class="form-label">Cash</label>
+                    <input
+                      type="number"
+                      id="cashReceipts"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                      <label class="form-label">Checks</label>
+                      <span id="checksTotal" class="font-bold">0.00</span>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="credit" class="form-label">Credit</label>
+                    <input
+                      type="number"
+                      id="credit"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="mobile" class="form-label">Mobile</label>
+                    <input
+                      type="number"
+                      id="mobile"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="receiptsPaidOutCash" class="form-label"
+                      >Paid Out Cash</label
+                    >
+                    <input
+                      type="number"
+                      id="receiptsPaidOutCash"
+                      class="form-control text-right"
+                      placeholder="0.00"
+                      step="0.01" />
+                  </div>
+                  <div
+                    class="d-flex justify-content-between font-bold p-2 highlight-total">
+                    <span>Total:</span>
+                    <span id="receiptsTotal">0.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column - Vendor Management -->
+            <div>
+              <div class="card shadow-sm">
+                <div class="card-header bg-green-50">
+                  <h5 class="mb-0 font-bold text-green-800">Vendor Checks</h5>
+                </div>
+                <div class="card-body">
+                  <!-- Add Vendor Form -->
+                  <div class="mb-3">
+                    <label class="form-label">Add Vendor</label>
+                    <div class="input-group mb-3">
+                      <select id="vendorSelect" class="form-select">
+                        <option value="" selected disabled>
+                          Select vendor or enter custom
+                        </option>
+                        <option value="CoreMark">CoreMark</option>
+                        <option value="General Dist.">General Dist.</option>
+                        <option value="Frito-Lay">Frito-Lay</option>
+                        <option value="Feel Free">Feel Free</option>
+                        <option value="Red Bull">Red Bull</option>
+                        <option value="Pepsi">Pepsi</option>
+                        <option value="custom">Add Custom Vendor...</option>
+                      </select>
+                      <button
+                        class="btn btn-success"
+                        type="button"
+                        id="addVendorBtn">
+                        Add
+                      </button>
+                    </div>
+                    <!-- Custom Vendor Input (hidden by default) -->
+                    <div id="customVendorInput" class="d-none">
+                      <div class="input-group mb-3">
+                        <input
+                          type="text"
+                          id="customVendorName"
+                          class="form-control"
+                          placeholder="Enter vendor name" />
+                        <button
+                          class="btn btn-primary"
+                          type="button"
+                          id="addCustomVendorBtn">
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Vendor List -->
+                  <div class="vendor-list mb-4">
+                    <div id="vendorListContainer">
+                      <!-- Vendors will be added here dynamically -->
+                    </div>
+                  </div>
+
+                  <!-- Vendor Total -->
+                  <div
+                    class="d-flex justify-content-between font-bold border-t pt-2 p-2 highlight-total">
+                    <span>Total:</span>
+                    <span id="vendorTotal">0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Final Report Summary -->
+              <div class="card shadow-sm mt-4">
+                <div class="card-header bg-green-100">
+                  <h5 class="mb-0 font-bold text-green-800">
+                    Final Report Summary
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="grid grid-cols-2 gap-2">
+                    <div class="font-bold">Bag Cash Total:</div>
+                    <div class="text-right" id="summaryBagCashTotal">0.00</div>
+
+                    <div class="font-bold">Vendor Checks Total:</div>
+                    <div class="text-right" id="summaryVendorTotal">0.00</div>
+
+                    <div class="font-bold">Receipts Total:</div>
+                    <div class="text-right" id="summaryReceiptsTotal">0.00</div>
+
+                    <div class="font-bold border-t pt-2">Short/Over:</div>
+                    <div class="text-right border-t pt-2" id="summaryShortOver">
+                      0.00
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex justify-end">
+            <button
+              type="button"
+              id="calculateBtn"
+              class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              Calculate
+            </button>
+            <button
+              type="button"
+              id="printBtn"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">
+              Print Report
+            </button>
+            <button
+              type="button"
+              id="downloadBtn"
+              class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded ml-2">
+              Download Text Report
+            </button>
+            <button
+              type="reset"
+              id="resetBtn"
+              class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-2">
+              Reset
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Print Version -->
+      <div id="printVersion" class="hidden">
+        <div class="bg-white p-4">
+          <h2 id="print-title" class="text-center mb-3">
+            Fastrac B Daily Report
+          </h2>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div><strong>Store:</strong> <span id="print-store"></span></div>
+            <div><strong>Date:</strong> <span id="print-date"></span></div>
+            <div>
+              <strong>Address:</strong> <span id="print-address"></span>
+            </div>
+            <div>
+              <strong>Report #:</strong> <span id="print-report-number"></span>
+            </div>
+          </div>
+
+          <table class="table table-bordered w-full mb-4">
+            <tr>
+              <th colspan="2" class="bg-gray-100">Bag Cash</th>
+            </tr>
+            <tr>
+              <td>Bag Cash</td>
+              <td id="print-bagCash" class="text-right"></td>
+            </tr>
+            <tr>
+              <td>Paid Out Cash</td>
+              <td id="print-paidOutCash" class="text-right"></td>
+            </tr>
+            <tr>
+              <td>Grocery</td>
+              <td id="print-grocery" class="text-right"></td>
+            </tr>
+            <tr>
+              <td>Gas</td>
+              <td id="print-gas" class="text-right"></td>
+            </tr>
+            <tr>
+              <td>Gall</td>
+              <td id="print-gall" class="text-right"></td>
+            </tr>
+            <tr>
+              <td>Rebate</td>
+              <td id="print-rebate" class="text-right"></td>
+            </tr>
+            <tr>
+              <td class="font-bold">Total</td>
+              <td id="print-bagCashTotal" class="text-right font-bold"></td>
+            </tr>
+          </table>
+
+          <div class="grid grid-cols-2 gap-4">
+            <table class="table table-bordered w-full">
+              <tr>
+                <th colspan="2" class="bg-gray-100">Vendor Checks</th>
+              </tr>
+              <tbody id="print-vendorList">
+                <!-- Vendors will be added here -->
+              </tbody>
+              <tr>
+                <td class="font-bold">Total</td>
+                <td id="print-vendorTotal" class="text-right font-bold"></td>
+              </tr>
+            </table>
+
+            <table class="table table-bordered w-full">
+              <tr>
+                <th colspan="2" class="bg-gray-100">Receipts Summary</th>
+              </tr>
+              <tr>
+                <td>Cash</td>
+                <td id="print-cashReceipts" class="text-right"></td>
+              </tr>
+              <tr>
+                <td>Checks</td>
+                <td id="print-checksTotal" class="text-right"></td>
+              </tr>
+              <tr>
+                <td>Credit</td>
+                <td id="print-credit" class="text-right"></td>
+              </tr>
+              <tr>
+                <td>Mobile</td>
+                <td id="print-mobile" class="text-right"></td>
+              </tr>
+              <tr>
+                <td>Paid Out Cash</td>
+                <td id="print-receiptsPaidOutCash" class="text-right"></td>
+              </tr>
+              <tr>
+                <td class="font-bold">Total</td>
+                <td id="print-receiptsTotal" class="text-right font-bold"></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="mt-4 text-right">
+            <p><strong>Prepared by:</strong> _______________________</p>
+            <p><strong>Approved by:</strong> _______________________</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom script -->
+
+    <script src="./script.js"></script>
+  </body>
+</html>

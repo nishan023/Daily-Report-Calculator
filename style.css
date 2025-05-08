@@ -1,0 +1,192 @@
+.table-bordered {
+  border: 2px solid #228b22;
+}
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #228b22;
+  padding: 8px;
+}
+.header-cell {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+.numeric-input {
+  text-align: right;
+}
+.report-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+input:focus {
+  outline: none;
+  box-shadow: 0 0 3px #228b22;
+}
+.vendor-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+.remove-vendor {
+  color: #dc3545;
+  cursor: pointer;
+}
+.vendor-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+/* Professional enhancements */
+.card {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #ddd;
+}
+.card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.card-header h5 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.form-control {
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+}
+.form-control:focus {
+  border-color: #68d391;
+  box-shadow: 0 0 0 2px rgba(104, 211, 145, 0.2);
+}
+.form-label {
+  font-weight: 500;
+  color: #2d3748;
+}
+.btn {
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+.btn-success {
+  background-color: #228b22;
+  border-color: #228b22;
+}
+.btn-success:hover {
+  background-color: #1b7e1b;
+  border-color: #1b7e1b;
+}
+/* Header Logo Section */
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+.logo {
+  width: 60px;
+  height: 60px;
+  background-color: #228b22;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 15px;
+}
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+.logo-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #228b22;
+}
+.logo-subtitle {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+
+@media print {
+  /* Existing print styles */
+  body * {
+    visibility: hidden;
+  }
+
+  #printVersion,
+  #printVersion * {
+    visibility: visible;
+  }
+
+  #printVersion {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: block !important;
+  }
+
+  /* Add these new styles for single page printing */
+  @page {
+    size: A4;
+    margin: 0.5cm;
+  }
+
+  #printVersion {
+    font-size: 10pt; /* Reduce font size for printing */
+  }
+
+  #printVersion table {
+    font-size: 9pt; /* Even smaller font for tables */
+  }
+
+  .table td,
+  .table th {
+    padding: 4px 8px; /* Reduce cell padding */
+  }
+
+  #print-title {
+    font-size: 14pt;
+    margin-bottom: 10px;
+  }
+
+  .grid {
+    gap: 8px !important; /* Reduce grid gaps */
+  }
+
+  /* Adjust margins and spacing */
+  .p-4 {
+    padding: 0.5rem !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .mt-4 {
+    margin-top: 0.5rem !important;
+  }
+
+  /* Ensure tables don't break across pages */
+  table {
+    page-break-inside: avoid;
+  }
+}
+
+/* Highlight important fields */
+.highlight-total {
+  background-color: #f0fff4;
+  font-weight: bold;
+}
