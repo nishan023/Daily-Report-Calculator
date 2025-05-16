@@ -238,76 +238,106 @@
         color: #718096;
       }
 
+      /* Print-specific styles */
       @media print {
-        /* Existing print styles */
-        body * {
-          visibility: hidden;
+        /* Hide elements that shouldn't be printed */
+        .no-print {
+          display: none !important;
         }
 
-        #printVersion,
-        #printVersion * {
-          visibility: visible;
+        body {
+          font-size: 12pt;
+          background-color: white;
+          color: black;
         }
 
-        #printVersion {
-          position: absolute;
-          left: 0;
-          top: 0;
+        .container {
           width: 100%;
-          display: block !important;
+          max-width: 100%;
         }
 
-        /* Add these new styles for single page printing */
-        @page {
-          size: A4;
-          margin: 0.5cm;
+        .card {
+          border: 1px solid #000;
+          border-radius: 0;
+          box-shadow: none;
+          margin-bottom: 15px;
+          break-inside: avoid;
         }
 
-        #printVersion {
-          font-size: 10pt; /* Reduce font size for printing */
+        .card-header {
+          background-color: #f2f2f2 !important;
+          color: #000;
+          font-weight: bold;
+          border-bottom: 1px solid #000;
+          padding: 8px;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        #printVersion table {
-          font-size: 9pt; /* Even smaller font for tables */
+        .table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 15px;
         }
 
-        .table td,
+        .table th,
+        .table td {
+          border: 1px solid #000;
+          padding: 5px;
+          text-align: left;
+        }
+
         .table th {
-          padding: 4px 8px; /* Reduce cell padding */
+          background-color: #f2f2f2 !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        #print-title {
-          font-size: 14pt;
-          margin-bottom: 10px;
+        .header-cell {
+          background-color: #f2f2f2 !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        .grid {
-          gap: 8px !important; /* Reduce grid gaps */
+        input {
+          border: none;
+          background: transparent;
+          font-family: inherit;
+          font-size: inherit;
+          padding: 0;
+          display: inline-block;
+          width: auto;
         }
 
-        /* Adjust margins and spacing */
-        .p-4 {
-          padding: 0.5rem !important;
+        input[readonly] {
+          color: inherit;
         }
 
-        .mb-4 {
-          margin-bottom: 0.5rem !important;
+        .over-value {
+          color: #16a34a !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        .mt-4 {
-          margin-top: 0.5rem !important;
+        .short-value {
+          color: #dc2626 !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        /* Ensure tables don't break across pages */
-        table {
+        .signature-section {
+          margin-top: 30px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
           page-break-inside: avoid;
         }
-      }
 
-      /* Highlight important fields */
-      .highlight-total {
-        background-color: #f0fff4;
-        font-weight: bold;
+        .signature-line {
+          margin-top: 20px;
+          border-top: 1px solid #000;
+          padding-top: 5px;
+        }
       }
     </style>
   </head>
@@ -369,6 +399,26 @@
         <div class="d-flex">
           <div id="currentDate" class="text-gray-600 me-4"></div>
           <div id="currentTime" class="text-gray-600"></div>
+        </div>
+      </div>
+
+      <!-- Print Header - Only visible when printing -->
+      <div class="d-none d-print-block mb-4">
+        <div class="text-center">
+          <h2 class="text-xl font-bold">Fuel Sales Report</h2>
+          <p id="print-subtitle" class="text-sm text-gray-600"></p>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <div>
+            <p><strong>Location:</strong> <span id="print-location"></span></p>
+            <p><strong>Station:</strong> <span id="print-station"></span></p>
+          </div>
+          <div>
+            <p><strong>Date:</strong> <span id="print-date"></span></p>
+            <p>
+              <strong>Report #:</strong> <span id="print-reportNumber"></span>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -808,6 +858,22 @@
           </div>
         </div>
 
+        <!-- Signature Section (Only visible when printing) -->
+        <div class="d-none d-print-block signature-section mt-5">
+          <div>
+            <div class="signature-line">
+              <p>Prepared by: _______________________________</p>
+              <p>Date: _____________________________________</p>
+            </div>
+          </div>
+          <div>
+            <div class="signature-line">
+              <p>Reviewed by: _______________________________</p>
+              <p>Date: _____________________________________</p>
+            </div>
+          </div>
+        </div>
+
         <!-- Action Buttons -->
         <div class="d-flex justify-content-end gap-2 mb-4 no-print">
           <button type="button" id="resetBtn" class="btn btn-outline-secondary">
@@ -824,60 +890,6 @@
           </button>
         </div>
       </form>
-
-      <!-- Print Version -->
-      <div id="printVersion" class="hidden">
-        <div class="print-container">
-          <h2 class="text-center text-xl font-bold mb-2">Fuel Sales Report</h2>
-          <div class="text-sm mb-3">
-            <div class="grid grid-cols-2 gap-2">
-              <div>Location: <span id="print-location"></span></div>
-              <div>Date: <span id="print-date"></span></div>
-              <div>Station: <span id="print-station"></span></div>
-              <div>Report #: <span id="print-reportNumber"></span></div>
-            </div>
-          </div>
-
-          <table class="table table-bordered w-full text-sm mb-2">
-            <thead>
-              <tr>
-                <th>Fuel Sales</th>
-                <th>Plus</th>
-                <th>Super</th>
-                <th>Regular</th>
-              </tr>
-            </thead>
-            <tbody id="print-fuelSalesBody"></tbody>
-          </table>
-
-          <table class="table table-bordered w-full text-sm mb-2">
-            <thead>
-              <tr>
-                <th>Inventory</th>
-                <th>Plus</th>
-                <th>Super</th>
-                <th>Regular</th>
-              </tr>
-            </thead>
-            <tbody id="print-inventoryBody"></tbody>
-          </table>
-
-          <table class="table w-full text-sm mb-3">
-            <tbody id="print-summaryBody"></tbody>
-          </table>
-
-          <div class="grid grid-cols-2 gap-4 text-sm mt-4">
-            <div>
-              <p>Prepared by: _________________</p>
-              <p>Date: ____________________</p>
-            </div>
-            <div>
-              <p>Reviewed by: _________________</p>
-              <p>Date: ____________________</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Bootstrap and JavaScript -->
@@ -898,13 +910,13 @@
             now.toLocaleTimeString();
         }
 
-        // Update time every second
+        // Initialize time display
         updateTime();
         setInterval(updateTime, 1000);
 
-        // Calculation functions
+        // Main calculation function
         function calculateGallons() {
-          // Plus
+          // Plus calculations
           const closingPlus =
             parseFloat(document.getElementById("closingPlus").value) || 0;
           const openingPlus =
@@ -912,7 +924,7 @@
           const gallonsPlus = (closingPlus - openingPlus).toFixed(3);
           document.getElementById("gallonsPlus").value = gallonsPlus;
 
-          // Super
+          // Super calculations
           const closingSuper =
             parseFloat(document.getElementById("closingSuper").value) || 0;
           const openingSuper =
@@ -920,14 +932,14 @@
           const gallonsSuper = (closingSuper - openingSuper).toFixed(3);
           document.getElementById("gallonsSuper").value = gallonsSuper;
 
-          // Regular
+          // Regular calculations
           const closingRegular =
             parseFloat(document.getElementById("closingRegular").value) || 0;
           const openingRegular =
             parseFloat(document.getElementById("openingRegular").value) || 0;
           const gallonsRegular = (closingRegular - openingRegular).toFixed(3);
           document.getElementById("gallonsRegular").value = gallonsRegular;
-          // Update totals
+
           calculateTotals();
         }
 
@@ -954,87 +966,99 @@
           const totalRegular = (gallonsRegular * priceRegular).toFixed(2);
           document.getElementById("totalRegular").value = totalRegular;
 
-          // Calculate over/short
+          // Calculate over/short values
+          calculateOverShort();
+
+          // Update summary totals
+          updateSummary();
+        }
+
+        function calculateOverShort() {
           const endingPlus =
             parseFloat(document.getElementById("endingPlus").value) || 0;
           const gaugingPlus =
             parseFloat(document.getElementById("gaugingPlus").value) || 0;
-          const overShortPlus = gaugingPlus - endingPlus;
+          const overShortPlus = (gaugingPlus - endingPlus).toFixed(3);
           document.getElementById("overShortPlus").value = overShortPlus;
+          updateOverShortDisplay(
+            "summaryOverShortPlus",
+            parseFloat(overShortPlus)
+          );
 
           const endingSuper =
             parseFloat(document.getElementById("endingSuper").value) || 0;
           const gaugingSuper =
             parseFloat(document.getElementById("gaugingSuper").value) || 0;
-          const overShortSuper = gaugingSuper - endingSuper;
+          const overShortSuper = (gaugingSuper - endingSuper).toFixed(3);
           document.getElementById("overShortSuper").value = overShortSuper;
+          updateOverShortDisplay(
+            "summaryOverShortSuper",
+            parseFloat(overShortSuper)
+          );
 
           const endingRegular =
             parseFloat(document.getElementById("endingRegular").value) || 0;
           const gaugingRegular =
             parseFloat(document.getElementById("gaugingRegular").value) || 0;
-          const overShortRegular = gaugingRegular - endingRegular;
+          const overShortRegular = (gaugingRegular - endingRegular).toFixed(3);
           document.getElementById("overShortRegular").value = overShortRegular;
+          updateOverShortDisplay(
+            "summaryOverShortRegular",
+            parseFloat(overShortRegular)
+          );
+        }
 
-          // Update summary
-          document.getElementById("totalGallonsSold").textContent = (
-            gallonsPlus +
-            gallonsSuper +
-            gallonsRegular
+        function updateSummary() {
+          // Update total gallons sold
+          const totalGallons = (
+            parseFloat(document.getElementById("gallonsPlus").value) ||
+            0 + parseFloat(document.getElementById("gallonsSuper").value) ||
+            0 + parseFloat(document.getElementById("gallonsRegular").value) ||
+            0
           ).toFixed(3);
+          document.getElementById("totalGallonsSold").textContent =
+            totalGallons;
 
-          const totalSales =
-            parseFloat(totalPlus) +
-            parseFloat(totalSuper) +
-            parseFloat(totalRegular);
-          document.getElementById("totalSalesAmount").textContent =
-            "$" + totalSales.toFixed(2);
+          // Update total sales amount
+          const totalSales = (
+            parseFloat(document.getElementById("totalPlus").value) ||
+            0 + parseFloat(document.getElementById("totalSuper").value) ||
+            0 + parseFloat(document.getElementById("totalRegular").value) ||
+            0
+          ).toFixed(2);
+          document.getElementById(
+            "totalSalesAmount"
+          ).textContent = `$${totalSales}`;
 
+          // Update total inventory adjustment
+          const totalAdjustment = (
+            parseFloat(document.getElementById("overShortPlus").value) ||
+            0 + parseFloat(document.getElementById("overShortSuper").value) ||
+            0 + parseFloat(document.getElementById("overShortRegular").value) ||
+            0
+          ).toFixed(3);
           document.getElementById("totalInventoryAdjustment").textContent =
-            overShortPlus + overShortSuper + overShortRegular;
+            totalAdjustment;
+        }
 
-          // Update over/short summary with color coding
-          const summaryOverShortPlus = document.getElementById(
-            "summaryOverShortPlus"
-          );
-          summaryOverShortPlus.textContent = overShortPlus;
-          summaryOverShortPlus.className =
-            overShortPlus > 0
+        function updateOverShortDisplay(elementId, value) {
+          const element = document.getElementById(elementId);
+          element.textContent = value.toFixed(3);
+          element.className =
+            value > 0
               ? "fw-bold over-value"
-              : overShortPlus < 0
-              ? "fw-bold short-value"
-              : "fw-bold";
-
-          const summaryOverShortSuper = document.getElementById(
-            "summaryOverShortSuper"
-          );
-          summaryOverShortSuper.textContent = overShortSuper;
-          summaryOverShortSuper.className =
-            overShortSuper > 0
-              ? "fw-bold over-value"
-              : overShortSuper < 0
-              ? "fw-bold short-value"
-              : "fw-bold";
-
-          const summaryOverShortRegular = document.getElementById(
-            "summaryOverShortRegular"
-          );
-          summaryOverShortRegular.textContent = overShortRegular;
-          summaryOverShortRegular.className =
-            overShortRegular > 0
-              ? "fw-bold over-value"
-              : overShortRegular < 0
+              : value < 0
               ? "fw-bold short-value"
               : "fw-bold";
         }
 
-        // Add event listeners to all input fields
+        // Event Listeners
         const inputs = document.querySelectorAll("input");
         inputs.forEach((input) => {
           input.addEventListener("input", calculateGallons);
         });
 
-        // Reset button functionality
+        // Reset button
         document
           .getElementById("resetBtn")
           .addEventListener("click", function () {
@@ -1043,125 +1067,50 @@
             calculateGallons();
           });
 
-        // Print button functionality
-        // Update the print button event listener
-        // Update the print button event listener
+        // Print button
         document
           .getElementById("printBtn")
-          .addEventListener("click", function () {
-            // Update header info
-            document.getElementById("print-location").textContent =
-              document.getElementById("locationInput").value;
-            document.getElementById("print-station").textContent =
-              document.getElementById("stationName").value;
-            document.getElementById("print-date").textContent =
-              document.getElementById("dateInput").value;
-            document.getElementById("print-reportNumber").textContent =
-              document.getElementById("reportNumberInput").value;
+          .addEventListener("click", handlePrint);
 
-            // Populate fuel sales table
-            const fuelSalesBody = document.getElementById(
-              "print-fuelSalesBody"
-            );
-            fuelSalesBody.innerHTML = `
-      <tr>
-        <td>Closing Reading</td>
-        <td>${document.getElementById("closingPlus").value}</td>
-        <td>${document.getElementById("closingSuper").value}</td>
-        <td>${document.getElementById("closingRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Opening Reading</td>
-        <td>${document.getElementById("openingPlus").value}</td>
-        <td>${document.getElementById("openingSuper").value}</td>
-        <td>${document.getElementById("openingRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Gallons Sold</td>
-        <td>${document.getElementById("gallonsPlus").value}</td>
-        <td>${document.getElementById("gallonsSuper").value}</td>
-        <td>${document.getElementById("gallonsRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Price/Gallon</td>
-        <td>$${document.getElementById("pricePlus").value}</td>
-        <td>$${document.getElementById("priceSuper").value}</td>
-        <td>$${document.getElementById("priceRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Total Dollars Received</td>
-        <td>$${document.getElementById("totalPlus").value}</td>
-        <td>$${document.getElementById("totalSuper").value}</td>
-        <td>$${document.getElementById("totalRegular").value}</td>
-      </tr>
-    `;
-
-            // Populate inventory table
-            const inventoryBody = document.getElementById(
-              "print-inventoryBody"
-            );
-            inventoryBody.innerHTML = `
-      <tr>
-        <td>Opening Inventory</td>
-        <td>${document.getElementById("openingInvPlus").value}</td>
-        <td>${document.getElementById("openingInvSuper").value}</td>
-        <td>${document.getElementById("openingInvRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Gallons Received</td>
-        <td>${document.getElementById("receivedPlus").value}</td>
-        <td>${document.getElementById("receivedSuper").value}</td>
-        <td>${document.getElementById("receivedRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Total Sales (Gallons)</td>
-        <td>${document.getElementById("salesPlus").value}</td>
-        <td>${document.getElementById("salesSuper").value}</td>
-        <td>${document.getElementById("salesRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Ending Gallons</td>
-        <td>${document.getElementById("endingPlus").value}</td>
-        <td>${document.getElementById("endingSuper").value}</td>
-        <td>${document.getElementById("endingRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Ending Gauging</td>
-        <td>${document.getElementById("gaugingPlus").value}</td>
-        <td>${document.getElementById("gaugingSuper").value}</td>
-        <td>${document.getElementById("gaugingRegular").value}</td>
-      </tr>
-      <tr>
-        <td>Over/Short</td>
-        <td>${document.getElementById("overShortPlus").value}</td>
-        <td>${document.getElementById("overShortSuper").value}</td>
-        <td>${document.getElementById("overShortRegular").value}</td>
-      </tr>
-    `;
-
-            // Populate summary table
-            const summaryBody = document.getElementById("print-summaryBody");
-            summaryBody.innerHTML = `
-      <tr>
-        <td><strong>Total Gallons Sold:</strong></td>
-        <td>${document.getElementById("totalGallonsSold").textContent}</td>
-      </tr>
-      <tr>
-        <td><strong>Total Sales Amount:</strong></td>
-        <td>${document.getElementById("totalSalesAmount").textContent}</td>
-      </tr>
-      <tr>
-        <td><strong>Total Inventory Adjustment:</strong></td>
-        <td>${
-          document.getElementById("totalInventoryAdjustment").textContent
-        }</td>
-      </tr>
-    `;
-
-            // Trigger print
-            window.print();
-          });
+        // Initial calculation
+        calculateGallons();
       });
+
+      // Print handler function
+      function handlePrint() {
+        updatePrintVersion();
+        setTimeout(() => {
+          window.print();
+        }, 100);
+      }
+
+      function updatePrintVersion() {
+        // Update header info
+        document.getElementById("print-location").textContent =
+          document.getElementById("locationInput").value;
+        document.getElementById("print-station").textContent =
+          document.getElementById("stationName").value;
+        document.getElementById("print-date").textContent =
+          document.getElementById("dateInput").value;
+        document.getElementById("print-reportNumber").textContent =
+          document.getElementById("reportNumberInput").value;
+        document.getElementById(
+          "print-subtitle"
+        ).textContent = `Generated on ${new Date().toLocaleString()}`;
+
+        // Update tables
+        updatePrintTables();
+      }
+
+      function updatePrintTables() {
+        // Populate tables for printing
+        document.getElementById("print-fuelSalesBody").innerHTML =
+          generateFuelSalesTable();
+        document.getElementById("print-inventoryBody").innerHTML =
+          generateInventoryTable();
+        document.getElementById("print-summaryBody").innerHTML =
+          generateSummaryTable();
+      }
     </script>
   </body>
 </html>
