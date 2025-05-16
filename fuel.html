@@ -264,50 +264,61 @@
         }
 
         #printVersion {
-          font-size: 10pt; /* Reduce font size for printing */
+          font-size: 10pt;
         }
 
         #printVersion table {
-          font-size: 9pt; /* Even smaller font for tables */
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 15px;
+          font-size: 9pt;
         }
 
-        .table td,
-        .table th {
-          padding: 4px 8px; /* Reduce cell padding */
+        #printVersion th,
+        #printVersion td {
+          border: 1px solid #000;
+          padding: 4px 6px;
+          text-align: left;
+        }
+
+        #printVersion th {
+          background-color: #f2f2f2 !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
         #print-title {
           font-size: 14pt;
           margin-bottom: 10px;
+          text-align: center;
+        }
+
+        #print-subtitle {
+          font-size: 8pt;
+          color: #666;
+          text-align: center;
+          margin-bottom: 15px;
         }
 
         .grid {
-          gap: 8px !important; /* Reduce grid gaps */
-        }
-
-        /* Adjust margins and spacing */
-        .p-4 {
-          padding: 0.5rem !important;
-        }
-
-        .mb-4 {
-          margin-bottom: 0.5rem !important;
-        }
-
-        .mt-4 {
-          margin-top: 0.5rem !important;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+          margin-bottom: 15px;
         }
 
         /* Ensure tables don't break across pages */
         table {
           page-break-inside: avoid;
         }
-      }
 
-      /* Highlight important fields */
-      .highlight-total {
-        background-color: #f0fff4;
-        font-weight: bold;
+        /* Signature section */
+        .grid-cols-2 {
+          margin-top: 30px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
       }
     </style>
   </head>
@@ -1060,6 +1071,7 @@
               document.getElementById("reportNumberInput").value;
 
             // Populate fuel sales table
+            // Populate fuel sales table
             const fuelSalesBody = document.getElementById(
               "print-fuelSalesBody"
             );
@@ -1095,7 +1107,106 @@
         <td>$${document.getElementById("totalRegular").value}</td>
       </tr>
     `;
+    <tr>
+      <td>Closing Reading</td>
+      <td>${document.getElementById("closingPlus").value}</td>
+      <td>${document.getElementById("closingSuper").value}</td>
+      <td>${document.getElementById("closingRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Opening Reading</td>
+      <td>${document.getElementById("openingPlus").value}</td>
+      <td>${document.getElementById("openingSuper").value}</td>
+      <td>${document.getElementById("openingRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Gallons Sold</td>
+      <td>${document.getElementById("gallonsPlus").value}</td>
+      <td>${document.getElementById("gallonsSuper").value}</td>
+      <td>${document.getElementById("gallonsRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Price/Gallon</td>
+      <td>$${document.getElementById("pricePlus").value}</td>
+      <td>$${document.getElementById("priceSuper").value}</td>
+      <td>$${document.getElementById("priceRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Total Dollars Received</td>
+      <td>$${document.getElementById("totalPlus").value}</td>
+      <td>$${document.getElementById("totalSuper").value}</td>
+      <td>$${document.getElementById("totalRegular").value}</td>
+    </tr>
+  `;
 
+            // Populate inventory table
+            const inventoryBody = document.getElementById(
+              "print-inventoryBody"
+            );
+            inventoryBody.innerHTML = `
+    <tr>
+      <td>Opening Inventory</td>
+      <td>${document.getElementById("openingInvPlus").value}</td>
+      <td>${document.getElementById("openingInvSuper").value}</td>
+      <td>${document.getElementById("openingInvRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Gallons Received</td>
+      <td>${document.getElementById("receivedPlus").value}</td>
+      <td>${document.getElementById("receivedSuper").value}</td>
+      <td>${document.getElementById("receivedRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Total Sales (Gallons)</td>
+      <td>${document.getElementById("salesPlus").value}</td>
+      <td>${document.getElementById("salesSuper").value}</td>
+      <td>${document.getElementById("salesRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Ending Gallons</td>
+      <td>${document.getElementById("endingPlus").value}</td>
+      <td>${document.getElementById("endingSuper").value}</td>
+      <td>${document.getElementById("endingRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Ending Gauging</td>
+      <td>${document.getElementById("gaugingPlus").value}</td>
+      <td>${document.getElementById("gaugingSuper").value}</td>
+      <td>${document.getElementById("gaugingRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Over/Short</td>
+      <td>${document.getElementById("overShortPlus").value}</td>
+      <td>${document.getElementById("overShortSuper").value}</td>
+      <td>${document.getElementById("overShortRegular").value}</td>
+    </tr>
+  `;
+
+            // Populate summary table
+            const summaryBody = document.getElementById("print-summaryBody");
+            summaryBody.innerHTML = `
+    <tr>
+      <td><strong>Total Gallons Sold:</strong></td>
+      <td>${document.getElementById("totalGallonsSold").textContent}</td>
+    </tr>
+    <tr>
+      <td><strong>Total Sales Amount:</strong></td>
+      <td>${document.getElementById("totalSalesAmount").textContent}</td>
+    </tr>
+    <tr>
+      <td><strong>Total Inventory Adjustment:</strong></td>
+      <td>${
+        document.getElementById("totalInventoryAdjustment").textContent
+      }</td>
+    </tr>
+  `;
+
+            // Add generation timestamp
+            document.getElementById(
+              "print-subtitle"
+            ).textContent = `Generated on ${new Date().toLocaleString()}`;
+
+            // Trigger print
             // Populate inventory table
             const inventoryBody = document.getElementById(
               "print-inventoryBody"
