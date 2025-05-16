@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fuel Sales Reporting System</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+      :root {
+        --primary-color: #1e40af;
+        --secondary-color: #0f766e;
+        --accent-color: #fde047;
+        --light-bg: #f9fafb;
+        --dark-text: #111827;
+        --light-text: #f9fafb;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--light-bg);
+        color: var(--dark-text);
+      }
+
+      .navbar-brand img {
+        height: 40px;
+        width: auto;
+      }
+
+      .card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: none;
+      }
+
+      .card:hover {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .card-header {
+        background-color: var(--primary-color);
+        color: var(--light-text);
+        font-weight: 600;
+        border-bottom: none;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+        background-color: #1e3a8a;
+        border-color: #1e3a8a;
+      }
+
+      .btn-secondary {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+
+      .btn-secondary:hover {
+        background-color: #0e6b63;
+        border-color: #0e6b63;
+      }
+
+      .form-control:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.25rem rgba(15, 118, 110, 0.25);
+      }
+
+      .table-bordered {
+        border: 2px solid var(--primary-color);
+      }
+
+      .table-bordered th,
+      .table-bordered td {
+        border: 1px solid var(--primary-color);
+        padding: 8px;
+      }
+
+      .header-cell {
+        background-color: #e5e7eb;
+        font-weight: bold;
+      }
+
+      .numeric-input {
+        text-align: right;
+      }
+
+      .report-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      input:focus {
+        outline: none;
+        box-shadow: 0 0 3px var(--primary-color);
+      }
+
+      .over-value {
+        color: #16a34a;
+      }
+
+      .short-value {
+        color: #dc2626;
+      }
+
+      /* Print specific styles */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+
+        .print-only {
+          display: block !important;
+        }
+
+        .card {
+          box-shadow: none;
+          border: 1px solid #ddd;
+        }
+
+        .card-header {
+          background-color: #f0f0f0 !important;
+          color: black !important;
+        }
+
+        body {
+          padding: 0;
+          margin: 0;
+        }
+      }
+
+      .print-only {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-gradient-to-r from-blue-800 to-blue-900 shadow-md no-print">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <i
+            class="fas fa-gas-pump text-yellow-300 me-2"
+            style="font-size: 1.5rem"></i>
+          <span class="font-bold text-xl">Fuel Sales Reporting System</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#"
+                ><i class="fas fa-home me-1"></i> Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                ><i class="fas fa-history me-1"></i> Reports</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                ><i class="fas fa-cog me-1"></i> Settings</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                ><i class="fas fa-question-circle me-1"></i> Help</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+      <!-- Header -->
+      <div
+        class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">
+            Daily Fuel Sales Report
+          </h2>
+          <p class="text-gray-600">Enter data below to generate your report</p>
+        </div>
+        <div class="d-flex">
+          <div id="currentDate" class="text-gray-600 me-4"></div>
+          <div id="currentTime" class="text-gray-600"></div>
+        </div>
+      </div>
+
+      <!-- Main Form -->
+      <form id="fuelReportForm">
+        <!-- Report Info Card -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-info-circle me-2"></i> Report Information
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="locationInput" class="form-label">Location</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="locationInput"
+                  placeholder="Enter location" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="dateInput" class="form-label">Date</label>
+                <input type="date" class="form-control" id="dateInput" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="reportNumberInput" class="form-label"
+                  >Report Number</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="reportNumberInput"
+                  placeholder="Enter report number" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="stationName" class="form-label">Station Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="stationName"
+                  placeholder="Enter station name" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fuel Sales Card -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-gas-pump me-2"></i> Fuel Sales Data
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="header-cell">Item</th>
+                    <th class="header-cell">Plus</th>
+                    <th class="header-cell">Super</th>
+                    <th class="header-cell">Regular</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Closing Meter Reading</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="closingPlus"
+                        placeholder="0.000" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="closingSuper"
+                        placeholder="0.000" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="closingRegular"
+                        placeholder="0.000" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Opening Meter Reading</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="openingPlus"
+                        placeholder="0.000" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="openingSuper"
+                        placeholder="0.000" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="openingRegular"
+                        placeholder="0.000" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Gallons Sold</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="gallonsPlus"
+                        readonly />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="gallonsSuper"
+                        readonly />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="gallonsRegular"
+                        readonly />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Price Per Gallon ($)</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control numeric-input"
+                        id="pricePlus"
+                        placeholder="0.00" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control numeric-input"
+                        id="priceSuper"
+                        placeholder="0.00" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control numeric-input"
+                        id="priceRegular"
+                        placeholder="0.00" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Total Dollars Received ($)</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control numeric-input"
+                        id="totalPlus"
+                        readonly />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control numeric-input"
+                        id="totalSuper"
+                        readonly />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control numeric-input"
+                        id="totalRegular"
+                        readonly />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Card -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-warehouse me-2"></i> Inventory Information
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="header-cell">Item</th>
+                    <th class="header-cell">Plus</th>
+                    <th class="header-cell">Super</th>
+                    <th class="header-cell">Regular</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Opening Inventory</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="openingInvPlus"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="openingInvSuper"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="openingInvRegular"
+                        placeholder="0" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Gallons Received</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="receivedPlus"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="receivedSuper"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="receivedRegular"
+                        placeholder="0" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Total Sales (Gallons)</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="salesPlus"
+                        placeholder="0.000" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="salesSuper"
+                        placeholder="0.000" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="0.001"
+                        class="form-control numeric-input"
+                        id="salesRegular"
+                        placeholder="0.000" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ending Gallons</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="endingPlus"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="endingSuper"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="endingRegular"
+                        placeholder="0" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Ending Gauging</td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="gaugingPlus"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="gaugingSuper"
+                        placeholder="0" />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="1"
+                        class="form-control numeric-input"
+                        id="gaugingRegular"
+                        placeholder="0" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Over/Short</td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control numeric-input"
+                        id="overShortPlus"
+                        readonly />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control numeric-input"
+                        id="overShortSuper"
+                        readonly />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="form-control numeric-input"
+                        id="overShortRegular"
+                        readonly />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Summary Card -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <i class="fas fa-chart-bar me-2"></i> Summary
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body bg-gray-50">
+                    <h5 class="card-title mb-3">Fuel Sales Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Total Gallons Sold:</span>
+                      <span id="totalGallonsSold" class="fw-bold">0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Total Sales Amount ($):</span>
+                      <span id="totalSalesAmount" class="fw-bold">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Total Inventory Adjustment:</span>
+                      <span id="totalInventoryAdjustment" class="fw-bold"
+                        >0</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body bg-gray-50">
+                    <h5 class="card-title mb-3">Over/Short Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Plus:</span>
+                      <span id="summaryOverShortPlus" class="fw-bold">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Super:</span>
+                      <span id="summaryOverShortSuper" class="fw-bold">0</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Regular:</span>
+                      <span id="summaryOverShortRegular" class="fw-bold"
+                        >0</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end gap-2 mb-4 no-print">
+          <button type="button" id="resetBtn" class="btn btn-outline-secondary">
+            <i class="fas fa-redo me-1"></i> Reset
+          </button>
+          <button type="button" id="printBtn" class="btn btn-secondary">
+            <i class="fas fa-print me-1"></i> Print
+          </button>
+          <button type="button" id="downloadTextBtn" class="btn btn-secondary">
+            <i class="fas fa-file-alt me-1"></i> Download Text
+          </button>
+          <button type="button" id="downloadReportBtn" class="btn btn-primary">
+            <i class="fas fa-download me-1"></i> Download Report
+          </button>
+        </div>
+      </form>
+
+      <!-- Print Version -->
+      <div id="printVersion" class="print-only">
+        <div class="mb-4 text-center">
+          <h1 class="text-2xl font-bold" id="print-title">Fuel Sales Report</h1>
+          <p class="text-gray-600" id="print-subtitle"></p>
+          <div class="d-flex justify-content-between mt-3">
+            <div>
+              <p>
+                <strong>Location:</strong> <span id="print-location"></span>
+              </p>
+              <p><strong>Station:</strong> <span id="print-station"></span></p>
+            </div>
+            <div>
+              <p><strong>Date:</strong> <span id="print-date"></span></p>
+              <p>
+                <strong>Report #:</strong> <span id="print-reportNumber"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">Fuel Sales Data</div>
+          <div class="card-body">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Plus</th>
+                  <th>Super</th>
+                  <th>Regular</th>
+                </tr>
+              </thead>
+              <tbody id="print-fuelSalesBody">
+                <!-- Will be populated with JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">Inventory Information</div>
+          <div class="card-body">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Plus</th>
+                  <th>Super</th>
+                  <th>Regular</th>
+                </tr>
+              </thead>
+              <tbody id="print-inventoryBody">
+                <!-- Will be populated with JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">Summary</div>
+          <div class="card-body">
+            <table class="table">
+              <tbody id="print-summaryBody">
+                <!-- Will be populated with JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <div class="row">
+            <div class="col-6">
+              <p>Prepared by: _______________________</p>
+              <p>Date: ____________________________</p>
+            </div>
+            <div class="col-6">
+              <p>Reviewed by: _______________________</p>
+              <p>Date: ____________________________</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap and JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set current date
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0];
+        document.getElementById("dateInput").value = formattedDate;
+        document.getElementById("currentDate").textContent =
+          today.toLocaleDateString();
+
+        // Update time function
+        function updateTime() {
+          const now = new Date();
+          document.getElementById("currentTime").textContent =
+            now.toLocaleTimeString();
+        }
+
+        // Update time every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Calculation functions
+        function calculateGallons() {
+          // Plus
+          const closingPlus =
+            parseFloat(document.getElementById("closingPlus").value) || 0;
+          const openingPlus =
+            parseFloat(document.getElementById("openingPlus").value) || 0;
+          const gallonsPlus = (closingPlus - openingPlus).toFixed(3);
+          document.getElementById("gallonsPlus").value = gallonsPlus;
+
+          // Super
+          const closingSuper =
+            parseFloat(document.getElementById("closingSuper").value) || 0;
+          const openingSuper =
+            parseFloat(document.getElementById("openingSuper").value) || 0;
+          const gallonsSuper = (closingSuper - openingSuper).toFixed(3);
+          document.getElementById("gallonsSuper").value = gallonsSuper;
+
+          // Regular
+          const closingRegular =
+            parseFloat(document.getElementById("closingRegular").value) || 0;
+          const openingRegular =
+            parseFloat(document.getElementById("openingRegular").value) || 0;
+          const gallonsRegular = (closingRegular - openingRegular).toFixed(3);
+          document.getElementById("gallonsRegular").value = gallonsRegular;
+          // Update totals
+          calculateTotals();
+        }
+
+        function calculateTotals() {
+          // Calculate dollars received
+          const gallonsPlus =
+            parseFloat(document.getElementById("gallonsPlus").value) || 0;
+          const pricePlus =
+            parseFloat(document.getElementById("pricePlus").value) || 0;
+          const totalPlus = (gallonsPlus * pricePlus).toFixed(2);
+          document.getElementById("totalPlus").value = totalPlus;
+
+          const gallonsSuper =
+            parseFloat(document.getElementById("gallonsSuper").value) || 0;
+          const priceSuper =
+            parseFloat(document.getElementById("priceSuper").value) || 0;
+          const totalSuper = (gallonsSuper * priceSuper).toFixed(2);
+          document.getElementById("totalSuper").value = totalSuper;
+
+          const gallonsRegular =
+            parseFloat(document.getElementById("gallonsRegular").value) || 0;
+          const priceRegular =
+            parseFloat(document.getElementById("priceRegular").value) || 0;
+          const totalRegular = (gallonsRegular * priceRegular).toFixed(2);
+          document.getElementById("totalRegular").value = totalRegular;
+
+          // Calculate over/short
+          const endingPlus =
+            parseFloat(document.getElementById("endingPlus").value) || 0;
+          const gaugingPlus =
+            parseFloat(document.getElementById("gaugingPlus").value) || 0;
+          const overShortPlus = gaugingPlus - endingPlus;
+          document.getElementById("overShortPlus").value = overShortPlus;
+
+          const endingSuper =
+            parseFloat(document.getElementById("endingSuper").value) || 0;
+          const gaugingSuper =
+            parseFloat(document.getElementById("gaugingSuper").value) || 0;
+          const overShortSuper = gaugingSuper - endingSuper;
+          document.getElementById("overShortSuper").value = overShortSuper;
+
+          const endingRegular =
+            parseFloat(document.getElementById("endingRegular").value) || 0;
+          const gaugingRegular =
+            parseFloat(document.getElementById("gaugingRegular").value) || 0;
+          const overShortRegular = gaugingRegular - endingRegular;
+          document.getElementById("overShortRegular").value = overShortRegular;
+
+          // Update summary
+          document.getElementById("totalGallonsSold").textContent = (
+            gallonsPlus +
+            gallonsSuper +
+            gallonsRegular
+          ).toFixed(3);
+
+          const totalSales =
+            parseFloat(totalPlus) +
+            parseFloat(totalSuper) +
+            parseFloat(totalRegular);
+          document.getElementById("totalSalesAmount").textContent =
+            "$" + totalSales.toFixed(2);
+
+          document.getElementById("totalInventoryAdjustment").textContent =
+            overShortPlus + overShortSuper + overShortRegular;
+
+          // Update over/short summary with color coding
+          const summaryOverShortPlus = document.getElementById(
+            "summaryOverShortPlus"
+          );
+          summaryOverShortPlus.textContent = overShortPlus;
+          summaryOverShortPlus.className =
+            overShortPlus > 0
+              ? "fw-bold over-value"
+              : overShortPlus < 0
+              ? "fw-bold short-value"
+              : "fw-bold";
+
+          const summaryOverShortSuper = document.getElementById(
+            "summaryOverShortSuper"
+          );
+          summaryOverShortSuper.textContent = overShortSuper;
+          summaryOverShortSuper.className =
+            overShortSuper > 0
+              ? "fw-bold over-value"
+              : overShortSuper < 0
+              ? "fw-bold short-value"
+              : "fw-bold";
+
+          const summaryOverShortRegular = document.getElementById(
+            "summaryOverShortRegular"
+          );
+          summaryOverShortRegular.textContent = overShortRegular;
+          summaryOverShortRegular.className =
+            overShortRegular > 0
+              ? "fw-bold over-value"
+              : overShortRegular < 0
+              ? "fw-bold short-value"
+              : "fw-bold";
+        }
+
+        // Add event listeners to all input fields
+        const inputs = document.querySelectorAll("input");
+        inputs.forEach((input) => {
+          input.addEventListener("input", calculateGallons);
+        });
+
+        // Reset button functionality
+        document
+          .getElementById("resetBtn")
+          .addEventListener("click", function () {
+            document.getElementById("fuelReportForm").reset();
+            document.getElementById("dateInput").value = formattedDate;
+            calculateGallons();
+          });
+
+        // Print button functionality
+        document
+          .getElementById("printBtn")
+          .addEventListener("click", function () {
+            // Update print version fields
+            document.getElementById("print-location").textContent =
+              document.getElementById("locationInput").value;
+            document.getElementById("print-station").textContent =
+              document.getElementById("stationName").value;
+            document.getElementById("print-date").textContent =
+              document.getElementById("dateInput").value;
+            document.getElementById("print-reportNumber").textContent =
+              document.getElementById("reportNumberInput").value;
+            document.getElementById(
+              "print-subtitle"
+            ).textContent = `Generated on ${new Date().toLocaleString()}`;
+
+            // Populate fuel sales table
+            const fuelSalesBody = document.getElementById(
+              "print-fuelSalesBody"
+            );
+            fuelSalesBody.innerHTML = `
+            <tr>
+              <td>Closing Meter Reading</td>
+              <td>${document.getElementById("closingPlus").value}</td>
+              <td>${document.getElementById("closingSuper").value}</td>
+              <td>${document.getElementById("closingRegular").value}</td>
+            </tr>
+            <tr>
+              <td>Opening Meter Reading</td>
+              <td>${document.getElementById("openingPlus").value}</td>
+              <td>${document.getElementById("openingSuper").value}</td>
+              <td>${document.getElementById("openingRegular").value}</td>
+            </tr>
+            <tr>
+              <td>Gallons Sold</td>
+              <td>${document.getElementById("gallonsPlus").value}</td>
+              <td>${document.getElementById("gallonsSuper").value}</td>
+              <td>${document.getElementById("gallonsRegular").value}</td>
+            </tr>
+            <tr>
+              <td>Price Per Gallon ($)</td>
+              <td>${document.getElementById("pricePlus").value}</td>
+              <td>${document.getElementById("priceSuper").value}</td>
+              <td>${document.getElementById("priceRegular").value}</td>
+            </tr>
+            <tr>
+              <td>Total Dollars Received ($)</td>
+              <td>${document.getElementById("totalPlus").value}</td>
+              <td>${document.getElementById("totalSuper").value}</td>
+              <td>${document.getElementById("totalRegular").value}</td>
+            </tr>
+          `;
+
+            window.print();
+          });
+      });
+    </script>
+  </body>
+</html>
