@@ -118,35 +118,196 @@
       .short-value {
         color: #dc2626;
       }
+      .table-bordered {
+        border: 2px solid #228b22;
+      }
+      .table-bordered th,
+      .table-bordered td {
+        border: 1px solid #228b22;
+        padding: 8px;
+      }
+      .header-cell {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+      .numeric-input {
+        text-align: right;
+      }
+      .report-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+      input:focus {
+        outline: none;
+        box-shadow: 0 0 3px #228b22;
+      }
+      .vendor-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+      }
+      .remove-vendor {
+        color: #dc3545;
+        cursor: pointer;
+      }
+      .vendor-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      /* Professional enhancements */
+      .card {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+      }
+      .card:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .card-header {
+        padding: 10px 15px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .card-header h5 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+      .form-control {
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+      }
+      .form-control:focus {
+        border-color: #68d391;
+        box-shadow: 0 0 0 2px rgba(104, 211, 145, 0.2);
+      }
+      .form-label {
+        font-weight: 500;
+        color: #2d3748;
+      }
+      .btn {
+        transition: all 0.2s ease;
+        font-weight: 500;
+      }
+      .btn-success {
+        background-color: #228b22;
+        border-color: #228b22;
+      }
+      .btn-success:hover {
+        background-color: #1b7e1b;
+        border-color: #1b7e1b;
+      }
+      /* Header Logo Section */
+      .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .logo-section {
+        display: flex;
+        align-items: center;
+      }
+      .logo {
+        width: 60px;
+        height: 60px;
+        background-color: #228b22;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-right: 15px;
+      }
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+      }
+      .logo-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #228b22;
+      }
+      .logo-subtitle {
+        font-size: 0.9rem;
+        color: #718096;
+      }
 
-      /* Print specific styles */
       @media print {
-        .no-print {
-          display: none !important;
+        /* Existing print styles */
+        body * {
+          visibility: hidden;
         }
 
-        .print-only {
+        #printVersion,
+        #printVersion * {
+          visibility: visible;
+        }
+
+        #printVersion {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
           display: block !important;
         }
 
-        .card {
-          box-shadow: none;
-          border: 1px solid #ddd;
+        /* Add these new styles for single page printing */
+        @page {
+          size: A4;
+          margin: 0.5cm;
         }
 
-        .card-header {
-          background-color: #f0f0f0 !important;
-          color: black !important;
+        #printVersion {
+          font-size: 10pt; /* Reduce font size for printing */
         }
 
-        body {
-          padding: 0;
-          margin: 0;
+        #printVersion table {
+          font-size: 9pt; /* Even smaller font for tables */
+        }
+
+        .table td,
+        .table th {
+          padding: 4px 8px; /* Reduce cell padding */
+        }
+
+        #print-title {
+          font-size: 14pt;
+          margin-bottom: 10px;
+        }
+
+        .grid {
+          gap: 8px !important; /* Reduce grid gaps */
+        }
+
+        /* Adjust margins and spacing */
+        .p-4 {
+          padding: 0.5rem !important;
+        }
+
+        .mb-4 {
+          margin-bottom: 0.5rem !important;
+        }
+
+        .mt-4 {
+          margin-top: 0.5rem !important;
+        }
+
+        /* Ensure tables don't break across pages */
+        table {
+          page-break-inside: avoid;
         }
       }
 
-      .print-only {
-        display: none;
+      /* Highlight important fields */
+      .highlight-total {
+        background-color: #f0fff4;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -665,84 +826,54 @@
       </form>
 
       <!-- Print Version -->
-      <div id="printVersion" class="print-only">
-        <div class="mb-4 text-center">
-          <h1 class="text-2xl font-bold" id="print-title">Fuel Sales Report</h1>
-          <p class="text-gray-600" id="print-subtitle"></p>
-          <div class="d-flex justify-content-between mt-3">
+      <div id="printVersion" class="hidden">
+        <div class="print-container">
+          <h2 class="text-center text-xl font-bold mb-2">Fuel Sales Report</h2>
+          <div class="text-sm mb-3">
+            <div class="grid grid-cols-2 gap-2">
+              <div>Location: <span id="print-location"></span></div>
+              <div>Date: <span id="print-date"></span></div>
+              <div>Station: <span id="print-station"></span></div>
+              <div>Report #: <span id="print-reportNumber"></span></div>
+            </div>
+          </div>
+
+          <table class="table table-bordered w-full text-sm mb-2">
+            <thead>
+              <tr>
+                <th>Fuel Sales</th>
+                <th>Plus</th>
+                <th>Super</th>
+                <th>Regular</th>
+              </tr>
+            </thead>
+            <tbody id="print-fuelSalesBody"></tbody>
+          </table>
+
+          <table class="table table-bordered w-full text-sm mb-2">
+            <thead>
+              <tr>
+                <th>Inventory</th>
+                <th>Plus</th>
+                <th>Super</th>
+                <th>Regular</th>
+              </tr>
+            </thead>
+            <tbody id="print-inventoryBody"></tbody>
+          </table>
+
+          <table class="table w-full text-sm mb-3">
+            <tbody id="print-summaryBody"></tbody>
+          </table>
+
+          <div class="grid grid-cols-2 gap-4 text-sm mt-4">
             <div>
-              <p>
-                <strong>Location:</strong> <span id="print-location"></span>
-              </p>
-              <p><strong>Station:</strong> <span id="print-station"></span></p>
+              <p>Prepared by: _________________</p>
+              <p>Date: ____________________</p>
             </div>
             <div>
-              <p><strong>Date:</strong> <span id="print-date"></span></p>
-              <p>
-                <strong>Report #:</strong> <span id="print-reportNumber"></span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mb-4">
-          <div class="card-header">Fuel Sales Data</div>
-          <div class="card-body">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Plus</th>
-                  <th>Super</th>
-                  <th>Regular</th>
-                </tr>
-              </thead>
-              <tbody id="print-fuelSalesBody">
-                <!-- Will be populated with JavaScript -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card mb-4">
-          <div class="card-header">Inventory Information</div>
-          <div class="card-body">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Plus</th>
-                  <th>Super</th>
-                  <th>Regular</th>
-                </tr>
-              </thead>
-              <tbody id="print-inventoryBody">
-                <!-- Will be populated with JavaScript -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card mb-4">
-          <div class="card-header">Summary</div>
-          <div class="card-body">
-            <table class="table">
-              <tbody id="print-summaryBody">
-                <!-- Will be populated with JavaScript -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="mt-5">
-          <div class="row">
-            <div class="col-6">
-              <p>Prepared by: _______________________</p>
-              <p>Date: ____________________________</p>
-            </div>
-            <div class="col-6">
-              <p>Reviewed by: _______________________</p>
-              <p>Date: ____________________________</p>
+              <p>Reviewed by: _________________</p>
+              <p>Date: ____________________</p>
             </div>
           </div>
         </div>
@@ -913,10 +1044,11 @@
           });
 
         // Print button functionality
+        // Update the print button event listener
         document
           .getElementById("printBtn")
           .addEventListener("click", function () {
-            // Update print version fields
+            // Update header info
             document.getElementById("print-location").textContent =
               document.getElementById("locationInput").value;
             document.getElementById("print-station").textContent =
@@ -925,47 +1057,39 @@
               document.getElementById("dateInput").value;
             document.getElementById("print-reportNumber").textContent =
               document.getElementById("reportNumberInput").value;
-            document.getElementById(
-              "print-subtitle"
-            ).textContent = `Generated on ${new Date().toLocaleString()}`;
 
-            // Populate fuel sales table
+            // Populate tables with minimal spacing
             const fuelSalesBody = document.getElementById(
               "print-fuelSalesBody"
             );
             fuelSalesBody.innerHTML = `
-            <tr>
-              <td>Closing Meter Reading</td>
-              <td>${document.getElementById("closingPlus").value}</td>
-              <td>${document.getElementById("closingSuper").value}</td>
-              <td>${document.getElementById("closingRegular").value}</td>
-            </tr>
-            <tr>
-              <td>Opening Meter Reading</td>
-              <td>${document.getElementById("openingPlus").value}</td>
-              <td>${document.getElementById("openingSuper").value}</td>
-              <td>${document.getElementById("openingRegular").value}</td>
-            </tr>
-            <tr>
-              <td>Gallons Sold</td>
-              <td>${document.getElementById("gallonsPlus").value}</td>
-              <td>${document.getElementById("gallonsSuper").value}</td>
-              <td>${document.getElementById("gallonsRegular").value}</td>
-            </tr>
-            <tr>
-              <td>Price Per Gallon ($)</td>
-              <td>${document.getElementById("pricePlus").value}</td>
-              <td>${document.getElementById("priceSuper").value}</td>
-              <td>${document.getElementById("priceRegular").value}</td>
-            </tr>
-            <tr>
-              <td>Total Dollars Received ($)</td>
-              <td>${document.getElementById("totalPlus").value}</td>
-              <td>${document.getElementById("totalSuper").value}</td>
-              <td>${document.getElementById("totalRegular").value}</td>
-            </tr>
-          `;
+    <tr>
+      <td>Closing Reading</td>
+      <td>${document.getElementById("closingPlus").value}</td>
+      <td>${document.getElementById("closingSuper").value}</td>
+      <td>${document.getElementById("closingRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Opening Reading</td>
+      <td>${document.getElementById("openingPlus").value}</td>
+      <td>${document.getElementById("openingSuper").value}</td>
+      <td>${document.getElementById("openingRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Gallons Sold</td>
+      <td>${document.getElementById("gallonsPlus").value}</td>
+      <td>${document.getElementById("gallonsSuper").value}</td>
+      <td>${document.getElementById("gallonsRegular").value}</td>
+    </tr>
+    <tr>
+      <td>Price/Gallon</td>
+      <td>$${document.getElementById("pricePlus").value}</td>
+      <td>$${document.getElementById("priceSuper").value}</td>
+      <td>$${document.getElementById("priceRegular").value}</td>
+    </tr>
+  `;
 
+            // Print the document
             window.print();
           });
       });
